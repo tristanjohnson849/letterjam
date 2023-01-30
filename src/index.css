@@ -6,6 +6,19 @@ html, body, #react-app {
     font-family: arial, verdana, sans-serif;
 }
 
+.fly-down {
+    animation: flying-down 600ms cubic-bezier(.25,.75,.2,1.2) forwards;
+}
+
+@keyframes flying-down {
+    from {
+        transform: translateY(-100vh)
+    }
+    to {
+        transform: translateY(0)
+    }
+}
+
 .pop-hover {
     transition: all 0.3s cubic-bezier(.25,.75,.5,1.6);
 }
@@ -19,7 +32,7 @@ html, body, #react-app {
     height: 64px;
     width: 64px;
     border-radius: 50%;
-    transition: all 0.3s cubic-bezier(.25,.75,.5,1.6);
+    transition: all 300ms cubic-bezier(.25,.75,.5,1.6);
 }
 
 .drop:hover {

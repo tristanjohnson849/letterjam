@@ -27,23 +27,23 @@ const MenuCard: React.FC<{}> = () => {
         setBackCard(<BackCard flip={() => setFlipped(false)} />);
     }
     return (
-        <div className="pop-hover flip-container" style={{
-            zIndex: 2,
-            height: '400px',
-            width: '320px',
-            padding: 0
-        }}>
-            <div className="flipper" style={{ transform: flipped ? 'rotateY(180deg)' : '' }}>
-                <div className="front" style={cardWrapperStyle}>
-                    <h1>Letter Jam</h1>
-                    <MenuButton flip={flipToCard(NewGameCard)} style={{ fontSize: '24px', fontWeight: 'bold' }}>Play</MenuButton>
-                    <MenuButton flip={flipToCard(StatsCard)}>Stats</MenuButton>
-                    <MenuButton flip={flipToCard(SettingsCard)}>Settings</MenuButton>
-                    <MenuButton flip={flipToCard(HelpCard)}>Help</MenuButton>
-                </div>
+        <div className="fly-down" style={{ zIndex: 2 }}>
+            <div className="pop-hover flip-container" style={{
+                height: '400px',
+                width: '320px',
+            }}>
+                <div className="flipper" style={{ transform: flipped ? 'rotateY(180deg)' : '' }}>
+                    <div className="front" style={cardWrapperStyle}>
+                        <h1 style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '48px'}}>Letter Jam</h1>
+                        <MenuButton flip={flipToCard(NewGameCard)} style={{ fontSize: '24px', fontWeight: 'bold' }}>Play</MenuButton>
+                        <MenuButton flip={flipToCard(StatsCard)}>Stats</MenuButton>
+                        <MenuButton flip={flipToCard(SettingsCard)}>Settings</MenuButton>
+                        <MenuButton flip={flipToCard(HelpCard)}>Help</MenuButton>
+                    </div>
 
-                <div className="back" style={cardWrapperStyle}>
-                    {backCard}
+                    <div className="back" style={cardWrapperStyle}>
+                        {backCard}
+                    </div>
                 </div>
             </div>
         </div>
