@@ -1,0 +1,68 @@
+html, body, #react-app {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #fff; 
+    font-family: arial, verdana, sans-serif;
+}
+
+.pop-hover-sm, .pop-hover-lg {
+    transition: all 0.3s cubic-bezier(.25,.75,.5,1.6);
+}
+
+.pop-hover-sm:hover {
+    transform: scale(1.04);
+}
+
+.pop-hover-lg:hover {
+    transform: scale(1.2);
+}
+
+.drop {
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(.25,.75,.5,1.6);
+}
+
+.drop:hover {
+    height: 72px;
+    width: 72px;
+}
+
+@keyframes falling {
+    from {
+        transform: translateX(-50%) translateY(-105vh);
+    }
+    to {
+        transform : translateX(-50%) translateY(5vh);
+    }
+}
+
+.shiny-red {
+    background: radial-gradient(ellipse at 36% 32% , #ffffff 0%, #edabaf 20%, #d22b38 60%, #d22b38 100%);
+    border: 2px solid #d22d39;
+    opacity: 0.95;
+}
+.shiny-green {
+    background: radial-gradient(ellipse at 36% 32%, #ffffff 0%, #a7eba2 20%, #32CD32 60%, #32CD32 100%);
+    border: 2px solid #90bf0a;
+    opacity: 0.95;
+}
+
+.splatter-red:after {
+    background-color: #d22b38;   
+}
+.splatter-green:after {
+    background-color: #32CD32;
+}
+
+.splatter-red:after, .splatter-green:after {
+    content: "";
+    position: absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    mix-blend-mode: lighten;
+}

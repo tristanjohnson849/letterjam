@@ -1,12 +1,10 @@
 import React from 'react';
-import { firebaseApp } from './firebase';
+import { RouterProvider } from 'react-router-dom';
+import router from './routing';
 
 
 const App: React.FC<{}> = () => (
-    <div>
-        <h1>This is an app</h1>
-        <p>Firebase App: {firebaseApp.name}</p>
-    </div>
+    <RouterProvider router={router}/>
 )
 
 export default App;
