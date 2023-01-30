@@ -26,7 +26,7 @@ const NewGameCard: React.FC<MenuCardBackProps> = ({ flip }) => {
                     borderRadius: '8px',
                     width: '96px',
                     height: '36px',
-                    backgroundColor: styles.colors.red,
+                    backgroundColor: styles.colors.green,
                     color: styles.colors.white,
                     fontSize: '24px',
                     border: 'none',

@@ -7,7 +7,7 @@ import StatsCard from './StatsCard';
 
 
 const cardWrapperStyle: CSSProperties = {
-    border: `8px solid ${styles.colors.red}`,
+    border: `16px solid ${styles.colors.red}`,
     borderRadius: '12px',
     textAlign: 'center',
     padding: '32px',
