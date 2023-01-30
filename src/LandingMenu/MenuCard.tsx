@@ -12,7 +12,7 @@ const cardWrapperStyle: CSSProperties = {
     textAlign: 'center',
     padding: '32px',
     background: '#fff',
-    boxShadow: '8px 8px 12px #d4d4d4',
+    boxShadow: '8px 8px 12px rgba(0, 0, 0, 0.5)',
     height: '400px',
     width: '320px',
     boxSizing: 'border-box'
