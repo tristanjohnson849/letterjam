@@ -42,6 +42,7 @@ const MenuCard: React.FC<{}> = () => {
                     </div>
 
                     <div className="back" style={cardWrapperStyle}>
+                        <h1 style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '48px'}}>Letter Jam</h1>
                         {backCard}
                     </div>
                 </div>

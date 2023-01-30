@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import LandingMenu from "./LandingMenu";
-import NewGame from "./NewGame";
+import Game from "./Game";
 
 
 const tbd = (
@@ -21,8 +21,8 @@ const router = createBrowserRouter([
       element: <LandingMenu/>
     },
     {
-      path: "/play",
-      element: <NewGame/>
+      path: "/new-game",
+      element: <Game/>
     },
     {
       path: "/stats",

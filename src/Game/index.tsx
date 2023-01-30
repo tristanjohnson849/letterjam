@@ -1,8 +1,8 @@
 import React from "react";
 
-const NewGame: React.FC<{}> = () => {
+const Game: React.FC<{}> = () => {
 
     return <div>New Game</div>
 }
 
-export default NewGame;
+export default Game;
