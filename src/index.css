@@ -6,16 +6,13 @@ html, body, #react-app {
     font-family: arial, verdana, sans-serif;
 }
 
-.pop-hover-sm, .pop-hover-lg {
+.pop-hover {
     transition: all 0.3s cubic-bezier(.25,.75,.5,1.6);
 }
 
-.pop-hover-sm:hover {
-    transform: scale(1.04);
-}
-
-.pop-hover-lg:hover {
-    transform: scale(1.2);
+.pop-hover:hover {
+    transform: scale(1.1) perspective(1px) translateZ(0);
+    backface-visibility: hidden;
 }
 
 .drop {

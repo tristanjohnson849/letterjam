@@ -27,7 +27,7 @@ const MenuCard: React.FC<{}> = () => {
         setBackCard(<BackCard flip={() => setFlipped(false)} />);
     }
     return (
-        <div className="pop-hover-sm flip-container" style={{
+        <div className="pop-hover flip-container" style={{
             zIndex: 2,
             height: '400px',
             width: '320px',
@@ -63,7 +63,7 @@ interface MenuButtonProps {
 const MenuButton: React.FC<PropsWithChildren<MenuButtonProps>> = ({ children, flip, style = {} }) => (
     <div
         style={{ width: '100%', fontSize: '20px', marginTop: '16px', cursor: 'pointer', ...style }}
-        className="pop-hover-lg"
+        className="pop-hover"
         onClick={flip}>
         {children}
     </div>
