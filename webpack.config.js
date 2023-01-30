@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: './src/index.tsx',
-    devtool: 'inline-source-map',    
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {
@@ -14,7 +14,7 @@ module.exports = {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
-            },{
+            }, {
                 test: /\.css$/i,
                 use: ["style-loader", "css-loader"],
             },
@@ -28,8 +28,12 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/',
     },
+    devServer: {
+        historyApiFallback: true,
+    }, 
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html'
-        })]
+        })
+    ]
 };

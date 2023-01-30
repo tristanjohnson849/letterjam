@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development --hot",
+    "firebase-local": "npm run build && firebase serve",
     "build": "webpack --mode production",
     "test": "jest src"
   },
