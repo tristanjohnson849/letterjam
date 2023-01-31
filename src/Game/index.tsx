@@ -1,4 +1,5 @@
 import React from "react";
+import PlayerCardFolder from "./PlayerCardFolder";
 
 const Game: React.FC<{}> = () => {
 
@@ -10,17 +11,7 @@ const Game: React.FC<{}> = () => {
             justifyContent: 'center',
             alignItems: 'center',
         }}>
-            <div
-                style={{
-                    position: 'absolute',
-                    bottom: '-16px',
-                    margin: 'auto',
-                    border: '16px solid #BBB',
-                    borderRadius: '16px',
-                    width: '720px',
-                    height: '64px'
-                }}
-            ></div>
+            <PlayerCardFolder />
         </div>
     );
 }
