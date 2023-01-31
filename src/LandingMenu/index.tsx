@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { generate as newId } from 'shortid';
 import Drop from './Drop';
 import MenuCard from './MenuCard';
@@ -39,7 +39,7 @@ const LandingMenu: React.FC<{}> = () => {
     const [timerFlag, setTimerFlag] = useState<boolean | undefined>();
     
     useEffect(() => {
-        setTimeout(() => setTimerFlag(true), 5000);
+        setTimeout(() => setTimerFlag(true), 50);
     }, [])
 
     useEffect(() => {
@@ -72,7 +72,7 @@ const LandingMenu: React.FC<{}> = () => {
         }}>
             <MenuCard/>
             {drops.map(({ id, x, color, animateTime }) => 
-                <Drop key={id} x={x} color={color} animateTime={animateTime} onClick={(e) => {
+                <Drop key={id} x={x} color={color} animateTime={animateTime} onMouseDown={(e) => {
                     addSplatter(id, color, [e.pageX, e.pageY])
                     removeDrop(id)
                 }}/>

@@ -19,8 +19,8 @@ const cardWrapperStyle: CSSProperties = {
 };
 
 const MenuCard: React.FC<{}> = () => {
-    const [flipped, setFlipped] = useState(false);
-    const [backCard, setBackCard] = useState<React.ReactNode>(null);
+    const [flipped, setFlipped] = useState(true);
+    const [backCard, setBackCard] = useState<React.ReactNode>(<NewGameCard flip={() => setFlipped(false)} />);
 
     const flipToCard = (BackCard: React.FC<MenuCardBackProps>) => () => {
         setFlipped(true);

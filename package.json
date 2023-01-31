@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open --mode development --hot",
-    "firebase-local": "npm run build && firebase serve",
+    "firebase-local": "npm run build && firebase",
     "build": "webpack --mode production",
-    "test": "jest src"
+    "test": "jest src",
+    "postinstall": "npx typesync"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,8 @@
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
+    "@types/babel__core": "^7.20.0",
+    "@types/babel__preset-env": "^7.9.2",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/shortid": "^0.0.29",

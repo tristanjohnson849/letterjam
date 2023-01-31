@@ -6,12 +6,12 @@ interface DropProps {
     color: 'red' | 'green';
     x: number;
     animateTime: number;
-    onClick?: MouseEventHandler<HTMLDivElement>
+    onMouseDown?: MouseEventHandler<HTMLDivElement>
 }
-const Drop: React.FC<DropProps> = ({ color, x, animateTime, onClick }) => {
+const Drop: React.FC<DropProps> = ({ color, x, animateTime, onMouseDown }) => {
     return (
         <div 
-            onClick={onClick}
+            onMouseDown={onMouseDown}
             className={`drop ${color === 'red' ? "shiny-red" : "shiny-green"}`}
             style={{
                 position: 'fixed',
@@ -19,7 +19,7 @@ const Drop: React.FC<DropProps> = ({ color, x, animateTime, onClick }) => {
                 bottom: 0,
                 left: `${x}vw`,
                 animation: `falling ${animateTime}ms linear forwards`,
-                cursor: onClick ? 'pointer' : 'default',
+                cursor: onMouseDown ? 'pointer' : 'default',
                 zIndex: 1
             }}
         />
