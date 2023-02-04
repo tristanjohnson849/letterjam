@@ -11,102 +11,33 @@ const PlayerCardFolder: React.FC<{}> = () => {
     };
 
     return (
-        <div style={{ width: '100%', height: '100%' }}>
+        <div>
             <div
                 className={`player-card-folder player-card-folder-${isOpen ? 'open' : ''}`}
                 onClick={onClick}
-                style={{
-                    position: 'fixed',
-                    bottom: 0,
-                    left: '50%',
-                    width: '720px',
-                    height: '480px',
-                    margin: 'auto',
-                    filter: 'drop-shadow(4px -4px 4px rgb(0,0,0,.2))',
-                    zIndex: 10,
-                    cursor: 'pointer'
-                }}
+                style={{ zIndex: 10 }}
             >
-                <div
-                    className="pop-hover flip-container"
-                    style={{
-                        height: '100%',
-                        width: '100%',
-                        position: 'relative',
-                    }}
-                >
-                    <div
-                        className="flip-container"
-                        style={{
-                            left: 0,
-                            bottom: 0,
-                            width: '100%',
-                            height: '102%',
-                            borderRadius: '16px',
-                            background: 'beige',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    />
-                </div>
+                <div className="folder-back"/>
             </div>
             <div
                 className={`player-card-folder player-card-folder-${isOpen ? 'open' : ''}`}
                 onClick={onClick}
-                style={{
-                    position: 'fixed',
-                    bottom: 0,
-                    left: '50%',
-                    width: '720px',
-                    height: '480px',
-                    margin: 'auto',
-                    zIndex: 13,
-                    cursor: 'pointer'
-                }}
+                style={{ zIndex: 13 }}
             >
                 <div
-                    className="pop-hover flip-container"
-                    style={{
-                        height: '100%',
-                        width: '100%',
-                        position: 'relative',
-                    }}
+                    className="flip-container full-size"
+                    style={{ position: 'relative' }}
                 >
                     <div
                         className={`folder-front ${opening ? 'folder-front-opening' : ''}`}
                         onTransitionEnd={() => setIsOpening(false)}
-                        style={{
-                            position: 'absolute',
-                            bottom: 0, left: 0,
-                            filter: 'drop-shadow(4px -4px 4px rgb(0,0,0,.2))',
-                            height: '100%',
-                            width: '100%',
-                            perspective: 0,
-                        }}
                     >
-                        <div style={{
-                            position: 'absolute',
-                            left: '-1%',
-                            bottom: 0,
-                            width: '100%',
-                            height: '85%',
-                            borderRadius: '16px',
-                            background: 'beige',
-                        }} />
-                        <div style={{
-                            position: 'absolute',
-                            left: '-1%',
-                            bottom: 0,
-                            borderRadius: '16px',
-                            width: '66%',
-                            height: '100%',
-                            background: 'linear-gradient(225deg, transparent 10%, beige 0)',
-                        }} />
+                        <div className="folder-front-panel"/>
+                        <div className="folder-front-tab"/>
                     </div>
                 </div>
             </div>
-            <div style={{ perspective: '1000px', height: '100%', width: '100%', position: 'fixed', zIndex: isOpen ? 14 : 12 }}>
+            <div className="flip-container full-size" style={{ position: 'fixed', top: 0, left: 0, zIndex: isOpen ? 14 : 12 }}>
                 <div
                     className={`player-card-container ${opening ?
                         'player-card-container-opening'
