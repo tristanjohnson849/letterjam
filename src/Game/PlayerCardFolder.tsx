@@ -14,15 +14,16 @@ const PlayerCardFolder: React.FC<{}> = () => {
         <div>
             <div
                 className={`player-card-folder player-card-folder-${isOpen ? 'open' : ''}`}
-                onClick={!isOpen && onClick('opening')}
                 style={{ zIndex: 10 }}
             >
                 <div className="folder-back"/>
             </div>
-            <div
+            <button
                 className={`player-card-folder player-card-folder-${isOpen ? 'open' : ''}`}
-                onClick={!isOpen && onClick('opening')}
+                onClick={onClick('opening')}
                 style={{ zIndex: 13 }}
+                disabled={isOpen}
+                tabIndex={0}
             >
                 <div
                     className="flip-container full-size"
@@ -35,7 +36,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                         <div className="folder-front-tab"/>
                     </div>
                 </div>
-            </div>
+            </button>
             <div className="flip-container full-size" style={{ 
                 position: 'fixed', 
                 top: 0, 
@@ -52,7 +53,14 @@ const PlayerCardFolder: React.FC<{}> = () => {
                 >
                     <h1 style={{ width: '100%', textAlign: 'center' }}>Player Card</h1>
                     <button 
-                        style={{ position: 'absolute', top: '12px', right: '12px'}} 
+                        style={{ 
+                            border: 'none', 
+                            background: 'none', 
+                            cursor: 'pointer', 
+                            position: 'absolute', 
+                            top: '12px', 
+                            right: '12px'
+                        }} 
                         onClick={onClick('closing')} 
                         disabled={!isOpen}
                     >

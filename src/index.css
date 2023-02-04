@@ -142,6 +142,9 @@ input[type=number]::-webkit-inner-spin-button {
     margin: auto;
     filter: drop-shadow(4px -4px 4px rgb(0, 0, 0, .2));
     cursor: pointer;
+    background: none;
+	border: none;
+	padding: 0;
 }
 
 .player-card-folder-open {
