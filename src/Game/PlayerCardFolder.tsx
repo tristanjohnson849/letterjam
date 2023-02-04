@@ -1,26 +1,27 @@
-import React, { useRef, useState } from "react";
-
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import { useAnimatedToggle } from "../util/Animated";
+import PlayerCard from "./PlayerCard";
 
 const PlayerCardFolder: React.FC<{}> = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [animating, setIsAnimating] = useState<'opening' | 'closing' | null>(null);
+    const [
+        isOpen, toggleFolder,
+        onAnimationEnd, animationState
+    ] = useAnimatedToggle(false);
 
-    const toggleFolder = (animating: 'opening' | 'closing' | null) => () => {
-        setIsOpen(prev => !prev);
-        setIsAnimating(animating);
-    };
+    const folderClass = `text-button player-card-folder player-card-folder-${isOpen ? 'open' : ''}`;
+    const isClosing = animationState === false;
 
     return (
         <div>
             <div
-                className={`player-card-folder player-card-folder-${isOpen ? 'open' : ''}`}
+                className={folderClass}
                 style={{ zIndex: 10 }}
             >
                 <div className="folder-back" />
             </div>
             <button
-                className={`player-card-folder player-card-folder-${isOpen ? 'open' : ''}`}
-                onClick={toggleFolder('opening')}
+                className={folderClass}
+                onClick={toggleFolder}
                 style={{ zIndex: 13 }}
                 disabled={isOpen}
                 tabIndex={0}
@@ -30,7 +31,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     style={{ position: 'relative' }}
                 >
                     <div
-                        className={`folder-front ${animating ? 'folder-front-opening' : ''}`}
+                        className={`folder-front 'folder-front-${animationState}`}
                     >
                         <div className="folder-front-panel" />
                         <div className="folder-front-tab" />
@@ -43,21 +44,21 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     position: 'fixed',
                     top: 0,
                     left: 0,
-                    zIndex: isOpen || animating === 'closing' ? 14 : 12
+                    zIndex: isOpen || isClosing ? 14 : 12
                 }}
-                onClick={isOpen && toggleFolder('closing')}
+                onClick={isOpen && toggleFolder}
             >
                 <div
-                    className={`player-card-container ${animating
+                    className={`player-card-container ${animationState
                         ? 'player-card-container-opening'
                         : isOpen
                             ? 'player-card-container-open'
                             : ''
                         }`}
-                    onTransitionEnd={() => setIsAnimating(null)}
+                    onTransitionEnd={onAnimationEnd}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <h1 style={{ width: '100%', textAlign: 'center' }}>Player Card</h1>
+                    <PlayerCard/>
                     <button
                         style={{
                             border: 'none',
@@ -67,7 +68,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                             top: '12px',
                             right: '12px'
                         }}
-                        onClick={toggleFolder('closing')}
+                        onClick={toggleFolder}
                         disabled={!isOpen}
                     >
                         X
@@ -77,5 +78,6 @@ const PlayerCardFolder: React.FC<{}> = () => {
         </div>
     );
 };
+
 
 export default PlayerCardFolder;

@@ -1,27 +1,29 @@
-import React, { MouseEventHandler } from "react";
+import React, { CSSProperties, MouseEventHandler, useState } from "react";
 import { styles } from "../constants";
-
 
 interface DropProps {
     color: 'red' | 'green';
     x: number;
     animateTime: number;
-    onMouseDown?: MouseEventHandler<HTMLDivElement>
+    onMouseDown?: MouseEventHandler<HTMLElement>
 }
 const Drop: React.FC<DropProps> = ({ color, x, animateTime, onMouseDown }) => {
+    const [hover, setHover] = useState(false);
+    const colorClass = color === 'red' ? "shiny-red" : "shiny-green";
+    const shadowColor = color === 'red'
+        ? styles.colors.redShadow
+        : styles.colors.greenShadow;
     return (
-        <div 
+        <button
+            
             onMouseDown={onMouseDown}
-            className={`drop ${color === 'red' ? "shiny-red" : "shiny-green"}`}
+            className={`text-button drop ${colorClass}`}
             style={{
-                position: 'fixed',
-                boxShadow: `2px 3px 6px ${color === 'red' ? styles.colors.redShadow : styles.colors.greenShadow}`,
-                bottom: 0,
+                '--drop-size': '64px',
+                boxShadow: `2px 3px 6px ${shadowColor}`,
                 left: `${x}vw`,
                 animation: `falling ${animateTime}ms linear forwards`,
-                cursor: onMouseDown ? 'pointer' : 'default',
-                zIndex: 1
-            }}
+            } as CSSProperties}
         />
     );
 };

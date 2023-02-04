@@ -4,7 +4,6 @@ import Drop from './Drop';
 import MenuCard from './MenuCard';
 import Splatter from './Splatter';
 
-
 interface DropData {
     id: string;
     x: number;

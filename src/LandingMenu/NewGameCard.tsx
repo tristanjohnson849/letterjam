@@ -1,13 +1,8 @@
-import React, { ChangeEventHandler, FocusEventHandler, useState } from "react"
+import React, { ChangeEventHandler, useState } from "react"
 import { useNavigate } from "react-router-dom";
-import { validate } from "schema-utils";
 
 import { styles } from "../constants";
 import { MenuCardBackProps } from './MenuCard';
-
-const isValid = (players: number) => (
-     players >= 2 && players <= 8
-);
 
 const NewGameCard: React.FC<MenuCardBackProps> = ({ flip }) => {
 
@@ -31,7 +26,7 @@ const NewGameCard: React.FC<MenuCardBackProps> = ({ flip }) => {
             navigate(`/new-game?${queryString}`)
         }}>
             <h2>New Game</h2>
-            <div className="pop-hover" style={{ margin: '24px 48px'}}>
+            <div className="pop-hover pop-transition" style={{ margin: '24px 48px'}}>
                 <label style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <input 
                         type="number"
@@ -55,7 +50,8 @@ const NewGameCard: React.FC<MenuCardBackProps> = ({ flip }) => {
                 </label>
             </div>
             <div style={{ margin: '24px 0', display: 'flex', justifyContent: 'space-between'}}>
-                <button type="submit" style={{
+                <button type="submit" className="pop-hover pop-transition"
+                    style={{
                     borderRadius: '8px',
                     width: '96px',
                     height: '36px',
@@ -65,7 +61,8 @@ const NewGameCard: React.FC<MenuCardBackProps> = ({ flip }) => {
                     border: 'none',
                     cursor: 'pointer'
                 }}>Start</button>
-                <button type="button" onClick={flip} style={{
+                <button type="button" onClick={flip} 
+                className="pop-hover pop-transition" style={{
                     backgroundColor: styles.colors.white,
                     color: '#666',
                     fontSize: '18px',

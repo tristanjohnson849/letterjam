@@ -5,7 +5,6 @@ import NewGameCard from './NewGameCard';
 import SettingsCard from './SettingsCard';
 import StatsCard from './StatsCard';
 
-
 const cardWrapperStyle: CSSProperties = {
     border: `16px solid ${styles.colors.red}`,
     borderRadius: '12px',
@@ -13,9 +12,10 @@ const cardWrapperStyle: CSSProperties = {
     padding: '32px',
     background: '#fff',
     boxShadow: '8px 8px 12px rgba(0, 0, 0, 0.5)',
-    height: '400px',
-    width: '320px',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    aspectRatio: '2/3',
+    minWidth: '300px',
+    translate: '-50% -50%'
 };
 
 const MenuCard: React.FC<{}> = () => {
@@ -28,10 +28,7 @@ const MenuCard: React.FC<{}> = () => {
     }
     return (
         <div className="fly-down" style={{ zIndex: 2 }}>
-            <div className="pop-hover flip-container" style={{
-                height: '400px',
-                width: '320px',
-            }}>
+            <div className="pop-hover pop-transition flip-container">
                 <div className="flipper" style={{ transform: flipped ? 'rotateY(180deg)' : '' }}>
                     <div className="front" style={cardWrapperStyle}>
                         <h1 style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '48px'}}>Letter Jam</h1>
@@ -40,7 +37,6 @@ const MenuCard: React.FC<{}> = () => {
                         <MenuButton flip={flipToCard(SettingsCard)}>Settings</MenuButton>
                         <MenuButton flip={flipToCard(HelpCard)}>Help</MenuButton>
                     </div>
-
                     <div className="back" style={cardWrapperStyle}>
                         <h1 style={{ fontFamily: 'Brush Script MT, cursive', fontSize: '48px'}}>Letter Jam</h1>
                         {backCard}
@@ -62,12 +58,12 @@ interface MenuButtonProps {
 }
 
 const MenuButton: React.FC<PropsWithChildren<MenuButtonProps>> = ({ children, flip, style = {} }) => (
-    <div
-        style={{ width: '100%', fontSize: '20px', marginTop: '16px', cursor: 'pointer', ...style }}
-        className="pop-hover"
+    <button
+        style={{ width: '100%', fontSize: '20px', marginTop: '16px', ...style }}
+        className="pop-hover pop-transition text-button"
         onClick={flip}>
         {children}
-    </div>
+    </button>
 );
 
 export default MenuCard;

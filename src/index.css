@@ -1,232 +1,201 @@
-html,
+#react-app,
 body,
-#react-app {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: #fff;
-    font-family: arial, verdana, sans-serif;
-}
-
-.fly-down {
-    animation: flying-down 600ms cubic-bezier(.25, .75, .2, 1.2) forwards;
-}
-
-@keyframes flying-down {
-    from {
-        transform: translateY(-100vh)
-    }
-
-    to {
-        transform: translateY(0)
-    }
-}
-
-.pop-hover {
-    transition: all 0.3s cubic-bezier(.25, .75, .5, 1.6);
-}
-
-.pop-hover:hover {
-    transform: scale(1.1) perspective(1px) translateZ(0);
-    backface-visibility: hidden;
-}
-
-.drop {
-    height: 64px;
-    width: 64px;
-    border-radius: 50%;
-    transition: all 300ms cubic-bezier(.25, .75, .5, 1.6);
-}
-
-.drop:hover {
-    height: 72px;
-    width: 72px;
-}
-
-@keyframes falling {
-    from {
-        transform: translateX(-50%) translateY(-105vh);
-    }
-
-    to {
-        transform: translateX(-50%) translateY(5vh);
-    }
-}
-
-.shiny-red {
-    background: radial-gradient(ellipse at 36% 32%, #ffffff 0%, #edabaf 20%, #d22d39 60%, #d22d39 100%);
-    border: 4px solid #d22d39;
-    opacity: 0.95;
-}
-
-.shiny-green {
-    background: radial-gradient(ellipse at 36% 32%, #ffffff 0%, #a7eba2 20%, #32CD32 60%, #32CD32 100%);
-    border: 4px solid #32CD32;
-    opacity: 0.95;
-}
-
-.splatter-red:after {
-    background-color: #d22d39;
-}
-
-.splatter-green:after {
-    background-color: #32CD32;
-}
-
-.splatter-red:after,
-.splatter-green:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    mix-blend-mode: lighten;
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #fff;
+  font-family: arial,verdana,sans-serif
 }
 
 .flip-container {
-    perspective: 1000px;
+  perspective: 1000px
 }
-
-/* flip speed goes here */
 .flipper {
-    transition: all 0.6s cubic-bezier(.25, .75, .5, 1.2);
-    transform-style: preserve-3d;
-
-    position: relative;
-    height: 100%;
-    width: 100%;
+  transition: .6s cubic-bezier(.25, .75, .5, 1.2);
+  transform-style: preserve-3d;
+  position: relative;
+  height: 100%;
+  width: 100%
 }
-
-/* hide back of pane during swap */
-.front,
-.back {
-    backface-visibility: hidden;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-/* front pane, placed above back */
+.back,
 .front {
-    z-index: 2;
-    /* for firefox 31 */
-    transform: rotateY(0deg);
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0
 }
-
-/* back, initially hidden pane */
+.front {
+  z-index: 2;
+  transform: rotateY(0)
+}
 .back {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg)
 }
-
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.text-button {
+  background: 0 0;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer
 }
-
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0
+}
 .full-size {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%
+}
+
+.fly-down {
+  animation: 0.6s cubic-bezier(.25, .75, .2, 1.2) forwards flying-down
+}
+@keyframes flying-down {
+  from {
+    transform: translateY(-100vh)
+  }
+  to {
+    transform: translateY(0)
+  }
+}
+.pop-transition {
+  transition: .3s cubic-bezier(.25, .75, .5, 1.6)
+}
+.pop-hover:hover {
+  scale: 1.1
+}
+.drop {
+  height: var(--drop-size);
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  transition: .3s cubic-bezier(.25, .75, .5, 1.6);
+  position: fixed;
+  bottom: 0;
+  cursor: 'pointer';
+}
+.drop:hover {
+    height: calc(var(--drop-size) * 1.1)
+}
+@keyframes falling {
+  from {
+    transform: translateX(-50%) translateY(-120vh)
+  }
+  to {
+    transform: translateX(-50%) translateY(20vh)
+  }
+}
+.shiny-red.shiny-red {
+  background: radial-gradient(ellipse at 36% 32%,#fff 0,#edabaf 20%,#d22d39 60%,#d22d39 100%);
+  border: 4px solid #d22d39;
+  opacity: .95
+}
+.shiny-green.shiny-green {
+  background: radial-gradient(ellipse at 36% 32%,#fff 0,#a7eba2 20%,#32cd32 60%,#32cd32 100%);
+  border: 4px solid #32cd32;
+  opacity: .95
+}
+.splatter-red:after {
+  background-color: #d22d39
+}
+.splatter-green:after {
+  background-color: #32cd32
+}
+.splatter-green:after,
+.splatter-red:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  mix-blend-mode: lighten
 }
 
 .player-card-folder {
-    transition: all 0.6s cubic-bezier(.25, .75, .5, 1.1);
-    translate: -50% 40vh;
-    width: 50vw;
-    height: 50vh;
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    margin: auto;
-    filter: drop-shadow(4px -4px 4px rgb(0, 0, 0, .2));
-    cursor: pointer;
-    background: none;
-	border: none;
-	padding: 0;
+  transition: .6s cubic-bezier(.25, .75, .5, 1.1);
+  translate: -50% 40vh;
+  width: 50vw;
+  height: 50vh;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  margin: auto;
+  filter: drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))
 }
-
 .player-card-folder-open {
-    translate: -50% 8vh;
+  translate: -50% 8vh
 }
-
 .folder-front {
-    transform-origin: bottom;
-    transition: transform 0.3s cubic-bezier(.25, .75, .5, 1.1);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    filter: drop-shadow(4px -4px 4px rgb(0, 0, 0, .2));
-    height: 100%;
-    width: 100%;
-    perspective: 0;
+  transform-origin: bottom;
+  transition: transform .3s cubic-bezier(.25, .75, .5, 1.1);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  filter: drop-shadow(4px -4px 4px rgb(0, 0, 0, .2));
+  height: 100%;
+  width: 100%;
+  perspective: 0
 }
-
 .folder-front:hover {
-    transform: rotateX(-10deg) rotateY(-1deg);
+  transform: rotateX(-10deg) rotateY(-1deg)
 }
-
 .folder-front-opening {
-    transform: rotateX(-40deg) rotateY(-2deg) !important;
+  transform: rotateX(-40deg) rotateY(-2deg)!important
 }
-
 .folder-front-panel {
-    position: absolute;
-    left: -1%;
-    bottom: 0;
-    width: 100%;
-    height: 85%;
-    border-radius: 16px;
-    background: beige;
+  position: absolute;
+  left: -1%;
+  bottom: 0;
+  width: 100%;
+  height: 85%;
+  border-radius: 16px;
+  background: beige
 }
-
 .folder-front-tab {
-    position: absolute;
-    left: -1%;
-    bottom: 0;
-    border-radius: 16px;
-    width: 66%;
-    height: 100%;
-    background: linear-gradient(225deg, transparent 10%, beige 0);
+  position: absolute;
+  left: -1%;
+  bottom: 0;
+  border-radius: 16px;
+  width: 66%;
+  height: 100%;
+  background: linear-gradient(225deg,transparent 10%,beige 0)
 }
-
 .folder-back {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 102%;
-    border-radius: 16px;
-    background: beige;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 102%;
+  border-radius: 16px;
+  background: beige;
+  display: flex;
+  justify-content: center;
+  align-items: center
 }
-
 .player-card-container {
-    position: fixed;
-    top: 100%;
-    left: 50%;
-    width: 80vw;
-    height: 80vh;
-    background: #FFF;
-    transform-origin: 50% 50%;
-    filter: drop-shadow(4px -4px 4px rgb(0, 0, 0, .2));
-    transition: all 0.3s cubic-bezier(.25, .75, .5, 1.1);
-    transform-origin: top center;
-    transform: translate(-50%, -8vh) scale(60%);
+  position: fixed;
+  top: 100%;
+  left: 50%;
+  width: 80vw;
+  height: 80vh;
+  background: #fff;
+  transform-origin: 50% 50%;
+  filter: drop-shadow(4px -4px 4px rgb(0, 0, 0, .2));
+  transition: .3s cubic-bezier(.25, .75, .5, 1.1);
+  transform-origin: top center;
+  transform: translate(-50%,-8vh) scale(60%)
 }
-
 .player-card-container-open {
-    top: 50%;
-    transform: translate(-50%, -50%) scale(100%);
-    filter: drop-shadow(4px 4px 4px rgb(0, 0, 0, .2));
+  top: 50%;
+  transform: translate(-50%,-50%) scale(100%);
+  filter: drop-shadow(4px 4px 4px rgb(0, 0, 0, .2))
 }
-
 .player-card-container-opening {
-    transform-origin: 30%;
-    top: 50%;
-    filter: drop-shadow(4px 0 4px rgb(0, 0, 0, .2));
-    transform: translate(-50%, -50%) scale(60%) rotateX(-20deg);
+  transform-origin: 30%;
+  top: 50%;
+  filter: drop-shadow(4px 0 4px rgb(0, 0, 0, .2));
+  transform: translate(-50%,-50%) scale(60%) rotateX(-20deg)
 }

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { randomBetween } from ".";
 
-
 export interface SplatterProps {
     color: 'red' | 'green';
     pos: [number, number];
