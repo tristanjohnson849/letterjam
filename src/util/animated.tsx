@@ -1,5 +1,5 @@
 import { mapValues } from 'lodash';
-import React, { Ref, SetStateAction, useCallback, useDebugValue, useEffect, useRef, useState } from 'react';
+import React, { Ref, SetStateAction, useCallback, useEffect, useRef } from 'react';
 import { useControllableState, useQueuedState } from './reactUtils';
 
 
@@ -83,7 +83,7 @@ export interface AnimatableProps<A extends string, T extends keyof JSX.Intrinsic
     onAnimationEnd?: (completedAnimation: A) => void;
 }
 
-export const Animatable = <A extends string, T extends keyof JSX.IntrinsicElements = "div">({
+export const Animatable = React.forwardRef(<A extends string, T extends keyof JSX.IntrinsicElements = "div">({
     // @ts-ignore -- can't find a way to assert as will be div in default
     as: Tag = "div",
     animations,
@@ -91,16 +91,30 @@ export const Animatable = <A extends string, T extends keyof JSX.IntrinsicElemen
     initialAnimation,
     onAnimationEnd,
     ...tagProps
-}: AnimatableProps<A, T> & React.ComponentProps<T>): React.ReactElement<any, any> | null => {
+}: AnimatableProps<A, T> & React.ComponentProps<T>, ref: React.ForwardedRef<HTMLElement>): React.ReactElement<any, any> | null => {
     const [tagRef] = useAnimation(
         currentAnimation,
         animations,
         initialAnimation || null,
         onAnimationEnd
     )
-    // @ts-ignore -- can't find a way to declare JSX.IntrinsicElements as tags
-    return <Tag ref={tagRef} {...tagProps} />;
-}
+
+    return (
+        // @ts-ignore  can't find a way to declare JSX.IntrinsicElements as tags
+        <Tag 
+            ref={(element: T) => {
+                // @ts-ignore rather than assert refs are functions
+                tagRef.current = element;
+                if (ref) { 
+                    // @ts-ignore
+                    ref.current = element;
+                }
+            }} 
+            {...tagProps} 
+        />
+    );
+});
+Animatable.displayName = "Animatable";
 
 const normalizedAnimation = (animation: AnimationInput): {
     keyframes: Keyframe[],
@@ -125,7 +139,7 @@ export type AnimatedTransitionState<T, A extends string, E extends HTMLElement> 
     A | null,
 ];
 
-const toTransitionAnimation = (animation: AnimationInput): NormalizedAnimation => {
+export const toTransitionAnimation = (animation: AnimationInput): NormalizedAnimation => {
     const { keyframes, options } = normalizedAnimation(animation);
     return {
         keyframes: keyframes,

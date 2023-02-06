@@ -1,5 +1,6 @@
 import React, { CSSProperties } from "react";
-import { AnimationInput, Animatable, ToggleAnimations, toToggleAnimations, useAnimatedToggle} from "../util/animated";
+import { AnimationInput, Animatable, toToggleAnimations, useAnimatedToggle, toTransitionAnimation} from "../util/animated";
+import { useIsHovered } from "../util/reactUtils";
 import PlayerCard from "./PlayerCard";
 
 const ANIMATION_DURATION = 600;
@@ -7,7 +8,7 @@ const ANIMATION_DURATION = 600;
 const folderAnimation = (
     keyframes: Keyframe[],
     duration: number = ANIMATION_DURATION
-): AnimationInput => ({
+): AnimationInput => toTransitionAnimation({
     keyframes: keyframes.map((keyframe): Keyframe => ({
         easing: 'cubic-bezier(.25, .75, .5, 1.2)',
         ...keyframe
@@ -15,7 +16,7 @@ const folderAnimation = (
     options: duration
 });
 
-const folderAnimations = (
+const folderToggleAnimations = (
     keyframes: Keyframe[],
     duration: number = ANIMATION_DURATION
 ) => toToggleAnimations(folderAnimation(keyframes, duration));
@@ -39,9 +40,11 @@ const PlayerCardFolder: React.FC<{}> = () => {
         folderContainerRef, currentAnimation
     ] = useAnimatedToggle<HTMLButtonElement>(SLIDER, false);
 
+    const [folderFrontHovered, folderFrontRef] = useIsHovered();
+
     return (
         <div>
-            <Animatable<ToggleAnimations>
+            <Animatable
                 currentAnimation={currentAnimation}
                 animations={toToggleAnimations(SLIDER)}
                 className="text-button"
@@ -75,12 +78,23 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     style={{ position: 'relative' }}
                 >
                     <Animatable
-                        currentAnimation={currentAnimation}
-                        animations={folderAnimations([
-                            { transform: 'rotateX(0) rotateY(0)' },
-                            { transform: 'rotateX(-40deg) rotateY(-2deg)' },
-                            { transform: 'rotateX(0) rotateY(0)' }
-                        ])}
+                        currentAnimation={currentAnimation || (folderFrontHovered ? 'peeking' : 'unpeeking')}
+                        animations={{
+                            peeking: folderAnimation([{ 
+                                transform: 'rotateX(-10deg) rotateY(-1deg)', 
+                                iterations: 'Infinity' }], 
+                            100),
+                            unpeeking: folderAnimation([{ 
+                                transform: 'rotateX(0) rotateY(0)', 
+                                iterations: 'Infinity'}], 
+                            100),
+                            ...folderToggleAnimations([
+                                { transform: 'rotateX(0) rotateY(0)' },
+                                { transform: 'rotateX(-40deg) rotateY(-2deg)' },
+                                { transform: 'rotateX(0) rotateY(0)' }
+                            ])}
+                        }
+                        ref={folderFrontRef}
                         style={{
                             transformOrigin: "bottom",
                             position: "absolute",
@@ -113,9 +127,9 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     </Animatable>
                 </div>
             </button>
-            <Animatable<ToggleAnimations>
+            <Animatable
                 currentAnimation={currentAnimation}
-                animations={folderAnimations([
+                animations={folderToggleAnimations([
                     { zIndex: 11 },
                     { zIndex: 13 },
                     { zIndex: 13 },
@@ -129,14 +143,14 @@ const PlayerCardFolder: React.FC<{}> = () => {
                 }}
                 onClick={isOpen && !currentAnimation ? toggleFolder : undefined}
             >
-                <Animatable<ToggleAnimations>
+                <Animatable
                     currentAnimation={currentAnimation}
-                    animations={folderAnimations([
+                    animations={folderToggleAnimations([
                         { transform: 'translate(-50%, -8vh) scale(60%)', filter: 'drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))', top: '100%' },
                         { transform: 'translate(-50%, -50%) scale(60%) rotateX(-30deg)', filter: 'drop-shadow(4px 0 4px rgb(0, 0, 0, .2))', top: '50%' },
                         { transform: 'translate(-50%, -50%) scale(100%)', filter: 'drop-shadow(4px 4px 4px rgb(0, 0, 0, .2))', top: '50%' },
                     ])}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e: any) => e.stopPropagation()}
                     style={{
                         position: "fixed",
                         top: "100%",

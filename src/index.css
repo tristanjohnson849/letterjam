@@ -114,9 +114,3 @@ input[type=number]::-webkit-outer-spin-button {
   mix-blend-mode: lighten
 }
 
-.folder-front {
-  transition: transform 200ms cubic-bezier(.25, .75, .5, 1.2);
-}
-.folder-front:hover {
-  transform: rotateX(-10deg) rotateY(-1deg);
-}
