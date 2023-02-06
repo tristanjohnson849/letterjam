@@ -1,5 +1,5 @@
 import React, { CSSProperties } from "react";
-import { AnimationInput, Animatable, toToggleAnimations, useAnimatedToggle, toTransitionAnimation} from "../util/animated";
+import { AnimationInput, Animatable, toToggleAnimations, useAnimatedToggle, toTransitionAnimation } from "../util/animated";
 import { useIsHovered } from "../util/reactUtils";
 import PlayerCard from "./PlayerCard";
 
@@ -80,19 +80,20 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     <Animatable
                         currentAnimation={currentAnimation || (folderFrontHovered ? 'peeking' : 'unpeeking')}
                         animations={{
-                            peeking: folderAnimation([{ 
-                                transform: 'rotateX(-10deg) rotateY(-1deg)', 
-                                iterations: 'Infinity' }], 
-                            100),
-                            unpeeking: folderAnimation([{ 
-                                transform: 'rotateX(0) rotateY(0)', 
-                                iterations: 'Infinity'}], 
-                            100),
+                            peeking: folderAnimation([{
+                                transform: 'rotateX(-10deg) rotateY(-1deg)',
+                                iterations: 'Infinity'
+                            }], 100),
+                            unpeeking: folderAnimation([{
+                                transform: 'rotateX(0) rotateY(0)',
+                                iterations: 'Infinity'
+                            }], 100),
                             ...folderToggleAnimations([
                                 { transform: 'rotateX(0) rotateY(0)' },
                                 { transform: 'rotateX(-40deg) rotateY(-2deg)' },
                                 { transform: 'rotateX(0) rotateY(0)' }
-                            ])}
+                            ])
+                        }
                         }
                         ref={folderFrontRef}
                         style={{
