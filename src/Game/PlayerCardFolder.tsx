@@ -147,9 +147,20 @@ const PlayerCardFolder: React.FC<{}> = () => {
                 <Animatable
                     currentAnimation={currentAnimation}
                     animations={folderToggleAnimations([
-                        { transform: 'translate(-50%, -8vh) scale(60%)', filter: 'drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))', top: '100%' },
-                        { transform: 'translate(-50%, -50%) scale(60%) rotateX(-30deg)', filter: 'drop-shadow(4px 0 4px rgb(0, 0, 0, .2))', top: '50%' },
-                        { transform: 'translate(-50%, -50%) scale(100%)', filter: 'drop-shadow(4px 4px 4px rgb(0, 0, 0, .2))', top: '50%' },
+                        { 
+                            transform: 'translate(-50%, -8vh) scale(60%)', 
+                            filter: 'drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))', 
+                            top: '100%' 
+                        }, { 
+                            transform: 'translate(-50%, -50%) scale(60%) rotateX(-30deg)', 
+                            filter: 'drop-shadow(4px 0 4px rgb(0, 0, 0, .2))', 
+                            top: '50%' 
+                        },
+                        { 
+                            transform: 'translate(-50%, -50%) scale(100%)', 
+                            filter: 'drop-shadow(4px 4px 4px rgb(0, 0, 0, .2))', 
+                            top: '50%' 
+                        },
                     ])}
                     onClick={(e: any) => e.stopPropagation()}
                     style={{
