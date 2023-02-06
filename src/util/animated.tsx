@@ -103,7 +103,7 @@ export const Animatable = React.forwardRef(<A extends string, T extends keyof JS
         // @ts-ignore  can't find a way to declare JSX.IntrinsicElements as tags
         <Tag 
             ref={(element: T) => {
-                // @ts-ignore rather than assert refs are functions
+                // @ts-ignore rather than assert refs have current
                 tagRef.current = element;
                 if (ref) { 
                     // @ts-ignore
