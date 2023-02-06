@@ -1,64 +1,155 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import { useAnimatedToggle } from "../util/Animated";
+import React, { CSSProperties } from "react";
+import { AnimationInput, Animatable, ToggleAnimations, toToggleAnimations, useAnimatedToggle} from "../util/animated";
 import PlayerCard from "./PlayerCard";
+
+const ANIMATION_DURATION = 600;
+
+const folderAnimation = (
+    keyframes: Keyframe[],
+    duration: number = ANIMATION_DURATION
+): AnimationInput => ({
+    keyframes: keyframes.map((keyframe): Keyframe => ({
+        easing: 'cubic-bezier(.25, .75, .5, 1.2)',
+        ...keyframe
+    })),
+    options: duration
+});
+
+const folderAnimations = (
+    keyframes: Keyframe[],
+    duration: number = ANIMATION_DURATION
+) => toToggleAnimations(folderAnimation(keyframes, duration));
+
+const SLIDER = folderAnimation([{ translate: '-50% 40vh' }, { translate: '-50% 8vh' }]);
+
+const playerCardFolderStyle: CSSProperties = {
+    translate: "-50% 40vh",
+    width: "50vw",
+    height: "50vh",
+    position: "fixed",
+    bottom: "0",
+    left: "50%",
+    margin: "auto",
+    filter: "drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))"
+};
 
 const PlayerCardFolder: React.FC<{}> = () => {
     const [
         isOpen, toggleFolder,
-        onAnimationEnd, animationState
-    ] = useAnimatedToggle(false);
-
-    const folderClass = `text-button player-card-folder player-card-folder-${isOpen ? 'open' : ''}`;
-    const isClosing = animationState === false;
+        folderContainerRef, currentAnimation
+    ] = useAnimatedToggle<HTMLButtonElement>(SLIDER, false);
 
     return (
         <div>
-            <div
-                className={folderClass}
-                style={{ zIndex: 10 }}
+            <Animatable<ToggleAnimations>
+                currentAnimation={currentAnimation}
+                animations={toToggleAnimations(SLIDER)}
+                className="text-button"
+                style={{ zIndex: 10, ...playerCardFolderStyle }}
             >
-                <div className="folder-back" />
-            </div>
+                <div
+                    style={{
+                        position: "absolute",
+                        left: "0",
+                        bottom: "0",
+                        width: "100%",
+                        height: "102%",
+                        borderRadius: "16px",
+                        background: "beige",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                />
+            </Animatable>
             <button
-                className={folderClass}
+                ref={folderContainerRef}
+                className="text-button"
                 onClick={toggleFolder}
-                style={{ zIndex: 13 }}
-                disabled={isOpen}
+                style={{ zIndex: 12, ...playerCardFolderStyle }}
+                disabled={isOpen || !!currentAnimation}
                 tabIndex={0}
             >
                 <div
                     className="flip-container full-size"
                     style={{ position: 'relative' }}
                 >
-                    <div
-                        className={`folder-front 'folder-front-${animationState}`}
+                    <Animatable
+                        currentAnimation={currentAnimation}
+                        animations={folderAnimations([
+                            { transform: 'rotateX(0) rotateY(0)' },
+                            { transform: 'rotateX(-40deg) rotateY(-2deg)' },
+                            { transform: 'rotateX(0) rotateY(0)' }
+                        ])}
+                        style={{
+                            transformOrigin: "bottom",
+                            position: "absolute",
+                            bottom: "0",
+                            left: "0",
+                            filter: "drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))",
+                            height: "100%",
+                            width: "100%",
+                            perspective: "0"
+                        }}
                     >
-                        <div className="folder-front-panel" />
-                        <div className="folder-front-tab" />
-                    </div>
+                        <div style={{
+                            position: "absolute",
+                            left: "-1%",
+                            bottom: "0",
+                            width: "100%",
+                            height: "85%",
+                            borderRadius: "16px",
+                            background: "beige"
+                        }} />
+                        <div style={{
+                            position: "absolute",
+                            left: "-1%",
+                            bottom: "0",
+                            borderRadius: "16px",
+                            width: "66%",
+                            height: "100%",
+                            background: "linear-gradient(225deg,transparent 10%,beige 0)"
+                        }} />
+                    </Animatable>
                 </div>
             </button>
-            <div
+            <Animatable<ToggleAnimations>
+                currentAnimation={currentAnimation}
+                animations={folderAnimations([
+                    { zIndex: 11 },
+                    { zIndex: 13 },
+                    { zIndex: 13 },
+                ])}
                 className="flip-container full-size"
                 style={{
                     position: 'fixed',
                     top: 0,
                     left: 0,
-                    zIndex: isOpen || isClosing ? 14 : 12
+                    zIndex: 11
                 }}
-                onClick={isOpen && toggleFolder}
+                onClick={isOpen && !currentAnimation ? toggleFolder : undefined}
             >
-                <div
-                    className={`player-card-container ${animationState
-                        ? 'player-card-container-opening'
-                        : isOpen
-                            ? 'player-card-container-open'
-                            : ''
-                        }`}
-                    onTransitionEnd={onAnimationEnd}
+                <Animatable<ToggleAnimations>
+                    currentAnimation={currentAnimation}
+                    animations={folderAnimations([
+                        { transform: 'translate(-50%, -8vh) scale(60%)', filter: 'drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))', top: '100%' },
+                        { transform: 'translate(-50%, -50%) scale(60%) rotateX(-30deg)', filter: 'drop-shadow(4px 0 4px rgb(0, 0, 0, .2))', top: '50%' },
+                        { transform: 'translate(-50%, -50%) scale(100%)', filter: 'drop-shadow(4px 4px 4px rgb(0, 0, 0, .2))', top: '50%' },
+                    ])}
                     onClick={(e) => e.stopPropagation()}
+                    style={{
+                        position: "fixed",
+                        top: "100%",
+                        left: "50%",
+                        width: "80vw",
+                        height: "80vh",
+                        background: "#fff",
+                        transformOrigin: "top center",
+                        transform: "translate(-50%,-8vh) scale(60%)",
+                        filter: "drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))"
+                    }}
                 >
-                    <PlayerCard/>
+                    <PlayerCard />
                     <button
                         style={{
                             border: 'none',
@@ -69,12 +160,12 @@ const PlayerCardFolder: React.FC<{}> = () => {
                             right: '12px'
                         }}
                         onClick={toggleFolder}
-                        disabled={!isOpen}
+                        disabled={!isOpen || !!currentAnimation}
                     >
                         X
                     </button>
-                </div>
-            </div>
+                </Animatable>
+            </Animatable>
         </div>
     );
 };
