@@ -1,5 +1,5 @@
 import React, { CSSProperties } from "react";
-import { AnimationInput, Animatable, toToggleAnimations, useAnimatedToggle, toTransitionAnimation } from "../util/animated";
+import { Animate, toToggleAnimations, useAnimatedToggle, toTransitionAnimation, ToggleAnimations } from "../util/animated";
 import { useIsHovered } from "../util/reactUtils";
 import PlayerCard from "./PlayerCard";
 
@@ -21,7 +21,7 @@ const folderToggleAnimations = (
     duration: number = ANIMATION_DURATION
 ) => toToggleAnimations(folderAnimation(keyframes, duration));
 
-const SLIDER = folderAnimation([{ translate: '-50% 40vh' }, { translate: '-50% 8vh' }]);
+const SLIDERS = folderToggleAnimations([{ translate: '-50% 40vh' }, { translate: '-50% 8vh' }]);
 
 const playerCardFolderStyle: CSSProperties = {
     translate: "-50% 40vh",
@@ -38,15 +38,15 @@ const PlayerCardFolder: React.FC<{}> = () => {
     const [
         isOpen, toggleFolder,
         folderContainerRef, currentAnimation
-    ] = useAnimatedToggle<HTMLButtonElement>(SLIDER, false);
+    ] = useAnimatedToggle<HTMLButtonElement>(false);
 
-    const [folderFrontHovered, folderFrontRef] = useIsHovered();
+    const [folderFrontHovered, folderFrontRef] = useIsHovered<HTMLDivElement>();
 
     return (
         <div>
-            <Animatable
+            <Animate<ToggleAnimations>
                 currentAnimation={currentAnimation}
-                animations={toToggleAnimations(SLIDER)}
+                animations={SLIDERS}
                 className="text-button"
                 style={{ zIndex: 10, ...playerCardFolderStyle }}
             >
@@ -64,9 +64,12 @@ const PlayerCardFolder: React.FC<{}> = () => {
                         alignItems: "center"
                     }}
                 />
-            </Animatable>
-            <button
+            </Animate>
+            <Animate<ToggleAnimations, "button">
+                as="button"
                 ref={folderContainerRef}
+                currentAnimation={currentAnimation}
+                animations={SLIDERS}
                 className="text-button"
                 onClick={toggleFolder}
                 style={{ zIndex: 12, ...playerCardFolderStyle }}
@@ -77,7 +80,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     className="flip-container full-size"
                     style={{ position: 'relative' }}
                 >
-                    <Animatable
+                    <Animate<ToggleAnimations|'peeking'|'unpeeking'>
                         currentAnimation={currentAnimation || (folderFrontHovered ? 'peeking' : 'unpeeking')}
                         animations={{
                             peeking: folderAnimation([{
@@ -125,10 +128,10 @@ const PlayerCardFolder: React.FC<{}> = () => {
                             height: "100%",
                             background: "linear-gradient(225deg,transparent 10%,beige 0)"
                         }} />
-                    </Animatable>
+                    </Animate>
                 </div>
-            </button>
-            <Animatable
+            </Animate>
+            <Animate<ToggleAnimations>
                 currentAnimation={currentAnimation}
                 animations={folderToggleAnimations([
                     { zIndex: 11 },
@@ -144,7 +147,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                 }}
                 onClick={isOpen && !currentAnimation ? toggleFolder : undefined}
             >
-                <Animatable
+                <Animate<ToggleAnimations>
                     currentAnimation={currentAnimation}
                     animations={folderToggleAnimations([
                         { 
@@ -190,8 +193,8 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     >
                         X
                     </button>
-                </Animatable>
-            </Animatable>
+                </Animate>
+            </Animate>
         </div>
     );
 };

@@ -12,7 +12,7 @@
       "lib": [
         "ES2022",
         "dom",
-        "dom.iterable" // <- there you are
-      ],
+        "dom.iterable"
+      ]
     }
   }

@@ -1,120 +1,106 @@
-import { mapValues } from 'lodash';
-import React, { Ref, SetStateAction, useCallback, useEffect, useRef } from 'react';
-import { useControllableState, useQueuedState } from './reactUtils';
-
+import React, { Ref, RefAttributes, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { useQueuedState } from './reactUtils';
 
 // [elementRef, animate, currentAnimation]
-export type AnimationHookResponse<A extends string, E extends HTMLElement> = [
-    Ref<E>,
-    (nextAnimation: A) => void,
-    A | null,
-];
+export type AnimatingRef<E extends Animatable> = Ref<E>
 
-export interface NormalizedAnimation {
-    keyframes: Keyframe[];
-    options: KeyframeAnimationOptions;
-}
-
-export type AnimationOptions = number | KeyframeAnimationOptions;
-
-export type AnimationInput = Keyframe[] | NormalizedAnimation | {
-    keyframes: Keyframe[],
-    options: AnimationOptions
-};
-
-export const useAnimation = <A extends string, E extends HTMLElement>(
-    controllingState?: A,
-    animations?: Record<A, AnimationInput>,
-    initialAnimation: A = null,
+export const useAnimatingRef = <A extends string, E extends HTMLElement>(
+    currentAnimation: A | null,
     onAnimationEnd?: (completedAnimation: A) => void,
-): AnimationHookResponse<A, E> => {
-    const [animationState, setAnimationState] = useControllableState<A>(controllingState, initialAnimation);
+): AnimatingRef<E> => {
     const elementRef = useRef<E>(null);
 
-    // if we have a ref and an animationState, animate the ref with the current animation
+    // if we have a ref and an currentAnimation, animate the ref with the currentAnimation
     useEffect(() => {
-        if (elementRef.current !== null && animationState !== null) {
-
-            if (!animations[animationState]) {
-                setAnimationState(null);
-                onAnimationEnd && onAnimationEnd(animationState);
-                return;
-            }
-            try {
-                const { keyframes, options: { ...options } } = normalizedAnimation(animations[animationState]);
-                const animation = elementRef.current.animate(keyframes, options);
-
-                const end = () => {
-                    animation.commitStyles();
-                    setAnimationState(null);
-                    onAnimationEnd && onAnimationEnd(animationState);
-                };
-                animation.onfinish = end;
-                return () => {
-                    if (animation.playState !== 'finished') {
-                        animation.finish();
-                    }
+        if (elementRef.current !== null) {
+            const animations = JSON.parse(elementRef.current.getAttribute('data-animations') || "{}") as unknown as Record<A, AnimationInput>;
+            if (currentAnimation !== null) {
+                if (!animations || !animations[currentAnimation]) {
+                    onAnimationEnd && onAnimationEnd(currentAnimation);
+                    return;
                 }
-            } catch (err) {
-                if (process.env.NODE_ENV !== "production") {
-                    const selector = elementRef.current.id || elementRef.current.className || null;
-                    console.error(`Failed to animate ${elementRef.current.localName}${selector ? `[${selector}]` : ''}.\nCheck your keyframes and options (${JSON.stringify(animations[animationState])}).\n`, err)
+                try {
+                    const { keyframes, options: { ...options } } = normalizedAnimation(
+                        animations[currentAnimation]
+                    );
+                    const animation = elementRef.current.animate(keyframes, options);
+
+                    const end = () => {
+                        animation.commitStyles();
+                        onAnimationEnd && onAnimationEnd(currentAnimation);
+                    };
+                    animation.onfinish = () => { end(); };
+                    return () => {
+                        if (animation.playState !== 'finished') {
+                            end();
+                        }
+                    }
+                } catch (err) {
+                    if (process.env.NODE_ENV !== "production") {
+                        const selector = elementRef.current.id || elementRef.current.className || null;
+                        console.error(`Failed to animate ${elementRef.current}${selector ? `[${selector}]` : ''}.\nCheck your keyframes and options (${JSON.stringify(animations[currentAnimation])}).\n`, err)
+                    }
                 }
             }
         }
-    }, [elementRef, animationState, JSON.stringify(animations)]);
+    }, [elementRef.current, currentAnimation, elementRef.current?.animations]);
 
-    return [
-        elementRef,
-        (newAnimationState: A) => {
-            if (newAnimationState !== animationState) {
-                setAnimationState(newAnimationState);
-            }
-        },
-        animationState,
-    ]
+    return elementRef
 };
 
-export interface AnimatableProps<A extends string, T extends keyof JSX.IntrinsicElements = "div"> {
+type Intrinsic = keyof JSX.IntrinsicElements;
+
+type TagAttributes<T extends Intrinsic> = JSX.IntrinsicElements[T] extends React.DetailedHTMLProps<infer A, any> ? A : never;
+type TagElement<T extends Intrinsic> = JSX.IntrinsicElements[T] extends React.DetailedHTMLProps<any, infer E> ? E : never;
+
+export type AnimateProps<A extends string, T extends Intrinsic = "div"> = {
     as?: T;
     currentAnimation: A | null;
-    animations: Record<A, AnimationInput>;
-    initialAnimation?: A;
     onAnimationEnd?: (completedAnimation: A) => void;
-}
+} & Omit<TagAttributes<T>, 'onAnimationEnd'>;
 
-export const Animatable = React.forwardRef(<A extends string, T extends keyof JSX.IntrinsicElements = "div">({
-    // @ts-ignore -- can't find a way to assert as will be div in default
-    as: Tag = "div",
-    animations,
-    currentAnimation,
-    initialAnimation,
-    onAnimationEnd,
-    ...tagProps
-}: AnimatableProps<A, T> & React.ComponentProps<T>, ref: React.ForwardedRef<HTMLElement>): React.ReactElement<any, any> | null => {
-    const [tagRef] = useAnimation(
+const animate = <A extends string, T extends Intrinsic = "div">(
+    props: AnimateProps<A, T>,
+    ref?: React.ForwardedRef<T>
+): React.ReactElement<any, any> => {
+    const {
+        as,
         currentAnimation,
+        onAnimationEnd,
         animations,
-        initialAnimation || null,
+        ...tagProps
+    } = props;
+    const Tag = as || "div";
+
+
+    const animatingRef = useAnimatingRef(
+        currentAnimation,
         onAnimationEnd
-    )
+    );
 
     return (
-        // @ts-ignore  can't find a way to declare JSX.IntrinsicElements as tags
-        <Tag 
-            ref={(element: T) => {
-                // @ts-ignore rather than assert refs have current
-                tagRef.current = element;
-                if (ref) { 
+        // @ts-ignore typescript's really not liking this
+        <Tag       
+            // @ts-ignore 
+            ref={(element) => {
+                // @ts-ignore
+                animatingRef.current = element;
+                if (ref) {
                     // @ts-ignore
                     ref.current = element;
                 }
-            }} 
-            {...tagProps} 
+            }}
+            data-animations={JSON.stringify(animations)}
+            {...tagProps}
         />
     );
-});
-Animatable.displayName = "Animatable";
+};
+
+export const Animate = React.forwardRef(animate) as <A extends string, T extends Intrinsic = "div">(
+    props: AnimateProps<A, T> & RefAttributes<TagElement<T>>
+) => React.ReactElement<any, any>;
+
+animate.displayName = "Animate";
 
 const normalizedAnimation = (animation: AnimationInput): {
     keyframes: Keyframe[],
@@ -147,31 +133,28 @@ export const toTransitionAnimation = (animation: AnimationInput): NormalizedAnim
     }
 }
 
-export const useAnimatedTransitionState = <T, A extends string, E extends HTMLElement>(
-    animations: Record<A, AnimationInput>,
+export const useAnimatedTransitionState = <T, A extends string, E extends Animatable<A> & HTMLElement>(
     initialState?: T,
     initialAnimation: A = null,
     onAnimationEnd?: (completedAnimation: A) => void
 ): AnimatedTransitionState<T, A, E> => {
     const queuedState = useQueuedState(initialState);
-
-    const transitionAnimations: Record<A, AnimationInput> = mapValues(animations, toTransitionAnimation);
+    const [animationState, setAnimationState] = useState(initialAnimation);
 
     const dispatch = (completedAnimation: A) => {
-        onAnimationEnd && onAnimationEnd(completedAnimation);
+        setAnimationState(null);
         queuedState.transitionAll();
+        onAnimationEnd && onAnimationEnd(completedAnimation);
     };
 
-    const [elementRef, animate, currentAnimation] = useAnimation<A, E>(
-        undefined,
-        transitionAnimations,
-        initialAnimation,
+    const elementRef = useAnimatingRef<A, E>(
+        animationState,
         dispatch,
     );
 
     // when setting state, set the next animation
     const animatedSetState = (nextState: SetStateAction<T>, nextAnimation: A | null) => {
-        animate(nextAnimation);
+        setAnimationState(nextAnimation);
         queuedState.enqueue(nextState);
     };
 
@@ -179,7 +162,7 @@ export const useAnimatedTransitionState = <T, A extends string, E extends HTMLEl
         queuedState.current,
         animatedSetState,
         elementRef,
-        currentAnimation,
+        animationState,
     ]
 }
 
@@ -191,8 +174,7 @@ export type SimpleTransitioningState<T, E extends HTMLElement> = [
     boolean,
 ]
 
-export const useSimpleTransitioningState = <T, E extends HTMLElement>(
-    animation: AnimationInput,
+export const useSimpleTransitioningState = <T, E extends Animatable<'transition'> & HTMLElement>(
     initialState?: T,
     initialTransitioning: boolean = false,
     onTransitionEnd?: () => void
@@ -202,14 +184,13 @@ export const useSimpleTransitioningState = <T, E extends HTMLElement>(
         animatedSetState,
         elementRef,
         animationState,
-    ] = useAnimatedTransitionState<T, 'a', E>(
-        { a: animation },
+    ] = useAnimatedTransitionState<T, 'transition', E>(
         initialState,
-        initialTransitioning ? 'a' : null,
+        initialTransitioning ? 'transition' : null,
         onTransitionEnd
     );
 
-    return [state, (action) => animatedSetState(action, 'a'), elementRef, animationState !== null];
+    return [state, (action) => animatedSetState(action, 'transition'), elementRef, animationState !== null];
 }
 
 // [state, setState, transitioningElementRef, currentAnimation]
@@ -232,8 +213,7 @@ export const toToggleAnimations = (togglingOn: AnimationInput): Record<ToggleAni
     };
 };
 
-export const useAnimatedToggle = <E extends HTMLElement>(
-    animation: AnimationInput,
+export const useAnimatedToggle = <E extends Animatable<ToggleAnimations> & HTMLElement>(
     initialState?: boolean,
     initialAnimationState: ToggleAnimations = null,
 ): AnimatedToggleState<E> => {
@@ -242,7 +222,7 @@ export const useAnimatedToggle = <E extends HTMLElement>(
         animatedSetState,
         elementRef,
         isTransitioning
-    ] = useAnimatedTransitionState<boolean, ToggleAnimations, E>(toToggleAnimations(animation), initialState, initialAnimationState);
+    ] = useAnimatedTransitionState<boolean, ToggleAnimations, E>(initialState, initialAnimationState);
 
     const nextAnimation = isToggled
         ? 'togglingOff'
