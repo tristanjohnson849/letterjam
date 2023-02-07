@@ -10,12 +10,12 @@ type AnimationInput = Keyframe[] | NormalizedAnimation | {
     options: AnimationOptions
 };
 
-interface Animatable<AnimationStates extends string = string> {
+interface StatefulAnimatable<AnimationStates extends string = string> {
     animations?: Record<AnimationStates, AnimationInput>;
 }
 
 declare namespace React {
     interface HTMLAttributes<T> {
-        animations?: Record<string, AnimationInput>
+        'data-animations'?: string
     }
 }

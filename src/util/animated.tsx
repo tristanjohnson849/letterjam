@@ -1,25 +1,26 @@
 import React, { Ref, RefAttributes, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { useQueuedState } from './reactUtils';
 
-// [elementRef, animate, currentAnimation]
-export type AnimatingRef<E extends Animatable> = Ref<E>
-
-export const useAnimatingRef = <A extends string, E extends HTMLElement>(
+export const useAnimatingRef = <
+    A extends string,
+    E extends HTMLElement
+>(
     currentAnimation: A | null,
     onAnimationEnd?: (completedAnimation: A) => void,
-): AnimatingRef<E> => {
+): Ref<E> => {
     const elementRef = useRef<E>(null);
 
+    const animationsAttr = elementRef.current?.getAttribute('data-animations') || '{}';
     // if we have a ref and an currentAnimation, animate the ref with the currentAnimation
     useEffect(() => {
         if (elementRef.current !== null) {
-            const animations = JSON.parse(elementRef.current.getAttribute('data-animations') || "{}") as unknown as Record<A, AnimationInput>;
-            if (currentAnimation !== null) {
-                if (!animations || !animations[currentAnimation]) {
-                    onAnimationEnd && onAnimationEnd(currentAnimation);
-                    return;
-                }
-                try {
+            try {
+                const animations = JSON.parse(animationsAttr) as unknown as Record<A, AnimationInput>;
+                if (currentAnimation !== null) {
+                    if (!animations || !animations[currentAnimation]) {
+                        onAnimationEnd && onAnimationEnd(currentAnimation);
+                        return;
+                    }
                     const { keyframes, options: { ...options } } = normalizedAnimation(
                         animations[currentAnimation]
                     );
@@ -35,60 +36,60 @@ export const useAnimatingRef = <A extends string, E extends HTMLElement>(
                             end();
                         }
                     }
-                } catch (err) {
-                    if (process.env.NODE_ENV !== "production") {
-                        const selector = elementRef.current.id || elementRef.current.className || null;
-                        console.error(`Failed to animate ${elementRef.current}${selector ? `[${selector}]` : ''}.\nCheck your keyframes and options (${JSON.stringify(animations[currentAnimation])}).\n`, err)
-                    }
+                }
+            } catch (err) {
+                if (process.env.NODE_ENV !== "production") {
+                    const selector = elementRef.current.id || elementRef.current.className || null;
+                    console.error(`Failed to animate ${elementRef.current}${selector ? `[${selector}]` : ''}(${currentAnimation}).\nCheck your animations: ${animationsAttr}.\n`, err)
                 }
             }
         }
-    }, [elementRef.current, currentAnimation, elementRef.current?.animations]);
+    }, [elementRef.current, currentAnimation, animationsAttr]);
 
     return elementRef
 };
 
-type Intrinsic = keyof JSX.IntrinsicElements;
+type PickByType<T, Value> = {
+    [P in keyof T as T[P] extends Value | undefined ? P : never]: T[P]
+}
 
-type TagAttributes<T extends Intrinsic> = JSX.IntrinsicElements[T] extends React.DetailedHTMLProps<infer A, any> ? A : never;
-type TagElement<T extends Intrinsic> = JSX.IntrinsicElements[T] extends React.DetailedHTMLProps<any, infer E> ? E : never;
+type HTMLIntrinsics = keyof PickByType<JSX.IntrinsicElements, React.DetailedHTMLProps<any, any>>
 
-export type AnimateProps<A extends string, T extends Intrinsic = "div"> = {
+type TagAttributes<T extends HTMLIntrinsics> = JSX.IntrinsicElements[T] extends React.DetailedHTMLProps<infer A, any> ? A : never;
+type TagElement<T extends HTMLIntrinsics> = JSX.IntrinsicElements[T] extends React.DetailedHTMLProps<any, infer E> ? E : never;
+
+export type AnimateProps<A extends string, T extends HTMLIntrinsics = "div"> = {
     as?: T;
     currentAnimation: A | null;
     onAnimationEnd?: (completedAnimation: A) => void;
-} & Omit<TagAttributes<T>, 'onAnimationEnd'>;
+} & Omit<TagAttributes<T>, 'onAnimationEnd'> & StatefulAnimatable<A>;
 
-const animate = <A extends string, T extends Intrinsic = "div">(
+const animate = <A extends string, T extends HTMLIntrinsics = "div">(
     props: AnimateProps<A, T>,
     ref?: React.ForwardedRef<T>
 ): React.ReactElement<any, any> => {
     const {
-        as,
+        as: Tag = "div",
         currentAnimation,
         onAnimationEnd,
         animations,
         ...tagProps
     } = props;
-    const Tag = as || "div";
 
 
-    const animatingRef = useAnimatingRef(
+    const animatingRef = useAnimatingRef<A, HTMLElement>(
         currentAnimation,
         onAnimationEnd
     );
 
     return (
         // @ts-ignore typescript's really not liking this
-        <Tag       
+        <Tag
             // @ts-ignore 
             ref={(element) => {
                 // @ts-ignore
                 animatingRef.current = element;
-                if (ref) {
-                    // @ts-ignore
-                    ref.current = element;
-                }
+                setRef(ref, element);
             }}
             data-animations={JSON.stringify(animations)}
             {...tagProps}
@@ -96,7 +97,17 @@ const animate = <A extends string, T extends Intrinsic = "div">(
     );
 };
 
-export const Animate = React.forwardRef(animate) as <A extends string, T extends Intrinsic = "div">(
+function setRef<T>(ref: React.ForwardedRef<T>, next: T): void {
+    if (ref) {
+        if (typeof ref === 'function') {
+            ref(next);
+        } else {
+            ref.current = next;
+        }
+    }
+}
+
+export const Animate = React.forwardRef(animate) as <A extends string, T extends HTMLIntrinsics = "div">(
     props: AnimateProps<A, T> & RefAttributes<TagElement<T>>
 ) => React.ReactElement<any, any>;
 
@@ -133,7 +144,7 @@ export const toTransitionAnimation = (animation: AnimationInput): NormalizedAnim
     }
 }
 
-export const useAnimatedTransitionState = <T, A extends string, E extends Animatable<A> & HTMLElement>(
+export const useAnimatedTransitionState = <T, A extends string, E extends HTMLElement>(
     initialState?: T,
     initialAnimation: A = null,
     onAnimationEnd?: (completedAnimation: A) => void
@@ -174,7 +185,7 @@ export type SimpleTransitioningState<T, E extends HTMLElement> = [
     boolean,
 ]
 
-export const useSimpleTransitioningState = <T, E extends Animatable<'transition'> & HTMLElement>(
+export const useSimpleTransitioningState = <T, E extends HTMLElement>(
     initialState?: T,
     initialTransitioning: boolean = false,
     onTransitionEnd?: () => void
@@ -213,7 +224,7 @@ export const toToggleAnimations = (togglingOn: AnimationInput): Record<ToggleAni
     };
 };
 
-export const useAnimatedToggle = <E extends Animatable<ToggleAnimations> & HTMLElement>(
+export const useAnimatedToggle = <E extends HTMLElement>(
     initialState?: boolean,
     initialAnimationState: ToggleAnimations = null,
 ): AnimatedToggleState<E> => {

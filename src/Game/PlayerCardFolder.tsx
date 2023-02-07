@@ -1,5 +1,5 @@
 import React, { CSSProperties } from "react";
-import { Animate, toToggleAnimations, useAnimatedToggle, toTransitionAnimation, ToggleAnimations } from "../util/animated";
+import { Animate, toToggleAnimations, useAnimatedToggle, toTransitionAnimation, ToggleAnimations, AnimateProps } from "../util/animated";
 import { useIsHovered } from "../util/reactUtils";
 import PlayerCard from "./PlayerCard";
 
