@@ -1,5 +1,5 @@
 import React from "react"
-import { MenuCardBackProps } from './MenuCard';
+import { MenuCardBackProps } from './MenuCard.js';
 
 const HelpCard: React.FC<MenuCardBackProps> = ({ flip }) => {
 

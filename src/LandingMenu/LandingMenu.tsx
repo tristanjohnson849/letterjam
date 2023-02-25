@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { generate as newId } from 'shortid';
-import Drop from './Drop';
-import MenuCard from './MenuCard';
-import Splatter from './Splatter';
+import Drop from './Drop.js';
+import MenuCard from './MenuCard.js';
+import Splatter from './Splatter.js';
 
 interface DropData {
     id: string;

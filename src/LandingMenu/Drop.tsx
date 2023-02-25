@@ -1,5 +1,5 @@
 import React, { CSSProperties, MouseEventHandler, useState } from "react";
-import { styles } from "../constants";
+import { styles } from "../constants.js";
 
 interface DropProps {
     color: 'red' | 'green';

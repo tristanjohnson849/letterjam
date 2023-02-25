@@ -1,9 +1,9 @@
 import React, { CSSProperties, PropsWithChildren, useState } from 'react';
-import { styles } from '../constants';
-import HelpCard from './HelpCard';
-import NewGameCard from './NewGameCard';
-import SettingsCard from './SettingsCard';
-import StatsCard from './StatsCard';
+import { styles } from '../constants.js';
+import HelpCard from './HelpCard.js';
+import NewGameCard from './NewGameCard.js';
+import SettingsCard from './SettingsCard.js';
+import StatsCard from './StatsCard.js';
 
 const cardWrapperStyle: CSSProperties = {
     border: `16px solid ${styles.colors.red}`,

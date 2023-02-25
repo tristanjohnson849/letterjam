@@ -1,5 +1,5 @@
 import React from "react";
-import PlayerCardFolder from "./PlayerCardFolder";
+import PlayerCardFolder from './PlayerCardFolder.js';
 
 const Game: React.FC<{}> = () => {
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import LandingMenu from "./LandingMenu";
-import Game from "./Game";
+import LandingMenu from './LandingMenu/LandingMenu.js';
+import Game from './Game/Game.js';
 
 
 const tbd = (

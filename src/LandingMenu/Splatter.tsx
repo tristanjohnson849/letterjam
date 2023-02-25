@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { randomBetween } from ".";
+import { randomBetween } from "./LandingMenu.js";
 
 export interface SplatterProps {
     color: 'red' | 'green';

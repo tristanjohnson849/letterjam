@@ -1,8 +1,8 @@
 import React, { ChangeEventHandler, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
-import { styles } from "../constants";
-import { MenuCardBackProps } from './MenuCard';
+import { styles } from '../constants.js';
+import { MenuCardBackProps } from './MenuCard.js';
 
 const NewGameCard: React.FC<MenuCardBackProps> = ({ flip }) => {
 

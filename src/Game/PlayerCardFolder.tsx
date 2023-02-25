@@ -1,19 +1,23 @@
 import React, { CSSProperties } from "react";
-import { Animate, toToggleAnimations, useAnimatedToggle, toTransitionAnimation, ToggleAnimations, AnimateProps } from "../util/animated";
-import { useIsHovered } from "../util/reactUtils";
-import PlayerCard from "./PlayerCard";
+import PlayerCard from './PlayerCard.js';
+
+import HoverAnimated from 'react-controlled-animations/components/HoverAnimated.js';
+import ControlledAnimated from 'react-controlled-animations/components/ControlledAnimated.js';
+import useTransitioningToggle, { ToggleTransitions } from 'react-controlled-animations/hooks/useTransitioningToggle.js';
+import { toToggleAnimations, toPersistedAnimation } from 'react-controlled-animations/animationInputMappers.js';
+import { AnimationInput } from 'react-controlled-animations/AnimationInput.js';
 
 const ANIMATION_DURATION = 600;
 
 const folderAnimation = (
     keyframes: Keyframe[],
     duration: number = ANIMATION_DURATION
-): AnimationInput => toTransitionAnimation({
+): AnimationInput => ({
     keyframes: keyframes.map((keyframe): Keyframe => ({
         easing: 'cubic-bezier(.25, .75, .5, 1.2)',
         ...keyframe
     })),
-    options: duration
+    options: { duration }
 });
 
 const folderToggleAnimations = (
@@ -34,18 +38,27 @@ const playerCardFolderStyle: CSSProperties = {
     filter: "drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))"
 };
 
+// const persistAnimation = 
+
 const PlayerCardFolder: React.FC<{}> = () => {
     const [
-        isOpen, toggleFolder,
-        folderContainerRef, currentAnimation
-    ] = useAnimatedToggle<HTMLButtonElement>(false);
+        isOpen, 
+        _startToggle,
+        endToggle, 
+        currentTransition
+    ] = useTransitioningToggle(false);
 
-    const [folderFrontHovered, folderFrontRef] = useIsHovered<HTMLDivElement>();
+    const startToggle = () => _startToggle();
+    
+    const forceFinish = (_: ToggleTransitions | null, webAnimation: Animation | null) => {
+        webAnimation?.finish();
+        webAnimation?.commitStyles();
+    }
 
     return (
         <div>
-            <Animate<ToggleAnimations>
-                currentAnimation={currentAnimation}
+            <ControlledAnimated<ToggleTransitions>
+                currentAnimation={currentTransition}
                 animations={SLIDERS}
                 className="text-button"
                 style={{ zIndex: 10, ...playerCardFolderStyle }}
@@ -64,41 +77,39 @@ const PlayerCardFolder: React.FC<{}> = () => {
                         alignItems: "center"
                     }}
                 />
-            </Animate>
-            <Animate<ToggleAnimations, "button">
+            </ControlledAnimated>
+            <ControlledAnimated<ToggleTransitions, "button">
                 as="button"
-                ref={folderContainerRef}
-                currentAnimation={currentAnimation}
+                currentAnimation={currentTransition}
+                onAnimationEnd={endToggle}
                 animations={SLIDERS}
                 className="text-button"
-                onClick={toggleFolder}
+                onClick={startToggle}
                 style={{ zIndex: 12, ...playerCardFolderStyle }}
-                disabled={isOpen || !!currentAnimation}
+                disabled={isOpen || !!currentTransition}
                 tabIndex={0}
             >
                 <div
                     className="flip-container full-size"
                     style={{ position: 'relative' }}
                 >
-                    <Animate<ToggleAnimations|'peeking'|'unpeeking'>
-                        currentAnimation={currentAnimation || (folderFrontHovered ? 'peeking' : 'unpeeking')}
+                    <HoverAnimated<ToggleTransitions>
+                        currentAnimation={currentTransition}
                         animations={{
-                            peeking: folderAnimation([{
+                            hovering: toPersistedAnimation(folderAnimation([{
                                 transform: 'rotateX(-10deg) rotateY(-1deg)',
                                 iterations: 'Infinity'
-                            }], 100),
-                            unpeeking: folderAnimation([{
+                            }], 100)),
+                            notHovering: toPersistedAnimation(folderAnimation([{
                                 transform: 'rotateX(0) rotateY(0)',
                                 iterations: 'Infinity'
-                            }], 100),
+                            }], 100)),
                             ...folderToggleAnimations([
                                 { transform: 'rotateX(0) rotateY(0)' },
                                 { transform: 'rotateX(-40deg) rotateY(-2deg)' },
                                 { transform: 'rotateX(0) rotateY(0)' }
                             ])
-                        }
-                        }
-                        ref={folderFrontRef}
+                        }}
                         style={{
                             transformOrigin: "bottom",
                             position: "absolute",
@@ -128,11 +139,12 @@ const PlayerCardFolder: React.FC<{}> = () => {
                             height: "100%",
                             background: "linear-gradient(225deg,transparent 10%,beige 0)"
                         }} />
-                    </Animate>
+                    </HoverAnimated>
                 </div>
-            </Animate>
-            <Animate<ToggleAnimations>
-                currentAnimation={currentAnimation}
+            </ControlledAnimated>
+            <ControlledAnimated<ToggleTransitions>
+                currentAnimation={currentTransition}
+                onAnimationEnd={forceFinish}
                 animations={folderToggleAnimations([
                     { zIndex: 11 },
                     { zIndex: 13 },
@@ -145,10 +157,11 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     left: 0,
                     zIndex: 11
                 }}
-                onClick={isOpen && !currentAnimation ? toggleFolder : undefined}
+                onClick={isOpen && !currentTransition ? startToggle : undefined}
             >
-                <Animate<ToggleAnimations>
-                    currentAnimation={currentAnimation}
+                <ControlledAnimated<ToggleTransitions>
+                    currentAnimation={currentTransition}
+                    onAnimationEnd={forceFinish}
                     animations={folderToggleAnimations([
                         { 
                             transform: 'translate(-50%, -8vh) scale(60%)', 
@@ -188,13 +201,13 @@ const PlayerCardFolder: React.FC<{}> = () => {
                             top: '12px',
                             right: '12px'
                         }}
-                        onClick={toggleFolder}
-                        disabled={!isOpen || !!currentAnimation}
+                        onClick={startToggle}
+                        disabled={!isOpen || !!currentTransition}
                     >
                         X
                     </button>
-                </Animate>
-            </Animate>
+                </ControlledAnimated>
+            </ControlledAnimated>
         </div>
     );
 };
