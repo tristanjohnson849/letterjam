@@ -1,4 +1,5 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
@@ -13,7 +14,8 @@ export default {
                 exclude: /node_modules/,
                 resolve: {
                     extensionAlias: {
-                        ".js": [".js", ".ts", ".tsx"]                    },
+                        ".js": [".js", ".ts", ".tsx"]                    
+                    },
                 }
             }, {
                 test: /\.m?jsx?$/,
@@ -30,7 +32,7 @@ export default {
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(path.dirname(import.meta.url), 'dist'),
+        path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'dist'),
         publicPath: '/',
     },
     devServer: {
