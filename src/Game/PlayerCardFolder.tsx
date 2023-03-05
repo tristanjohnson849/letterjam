@@ -4,7 +4,7 @@ import PlayerCard from './PlayerCard.js';
 import HoverAnimated from 'react-controlled-animations/components/HoverAnimated.js';
 import ControlledAnimated from 'react-controlled-animations/components/ControlledAnimated.js';
 import useTransitioningToggle, { ToggleTransitions } from 'react-controlled-animations/hooks/useTransitioningToggle.js';
-import { toToggleAnimations, toPersistedAnimation } from 'react-controlled-animations/animationInputMappers.js';
+import { toToggleAnimations } from 'react-controlled-animations/animationInputMappers.js';
 import { AnimationInput } from 'react-controlled-animations/AnimationInput.js';
 
 const ANIMATION_DURATION = 600;
@@ -17,7 +17,7 @@ const folderAnimation = (
         easing: 'cubic-bezier(.25, .75, .5, 1.2)',
         ...keyframe
     })),
-    options: { duration }
+    options: { duration, fill: 'forwards' }
 });
 
 const folderToggleAnimations = (
@@ -37,8 +37,6 @@ const playerCardFolderStyle: CSSProperties = {
     margin: "auto",
     filter: "drop-shadow(4px -4px 4px rgb(0, 0, 0, .2))"
 };
-
-// const persistAnimation = 
 
 const PlayerCardFolder: React.FC<{}> = () => {
     const [
@@ -60,6 +58,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
             <ControlledAnimated<ToggleTransitions>
                 currentAnimation={currentTransition}
                 animations={SLIDERS}
+                finishOnInterrupt
                 className="text-button"
                 style={{ zIndex: 10, ...playerCardFolderStyle }}
             >
@@ -82,6 +81,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                 as="button"
                 currentAnimation={currentTransition}
                 onAnimationEnd={endToggle}
+                finishOnInterrupt
                 animations={SLIDERS}
                 className="text-button"
                 onClick={startToggle}
@@ -96,20 +96,21 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     <HoverAnimated<ToggleTransitions>
                         currentAnimation={currentTransition}
                         animations={{
-                            hovering: toPersistedAnimation(folderAnimation([{
+                            hovering: folderAnimation([{
                                 transform: 'rotateX(-10deg) rotateY(-1deg)',
                                 iterations: 'Infinity'
-                            }], 100)),
-                            notHovering: toPersistedAnimation(folderAnimation([{
+                            }], 100),
+                            notHovering: folderAnimation([{
                                 transform: 'rotateX(0) rotateY(0)',
                                 iterations: 'Infinity'
-                            }], 100)),
+                            }], 100),
                             ...folderToggleAnimations([
                                 { transform: 'rotateX(0) rotateY(0)' },
                                 { transform: 'rotateX(-40deg) rotateY(-2deg)' },
                                 { transform: 'rotateX(0) rotateY(0)' }
                             ])
                         }}
+                        finishOnInterrupt
                         style={{
                             transformOrigin: "bottom",
                             position: "absolute",
@@ -150,6 +151,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                     { zIndex: 13 },
                     { zIndex: 13 },
                 ])}
+                finishOnInterrupt
                 className="flip-container full-size"
                 style={{
                     position: 'fixed',
@@ -178,6 +180,7 @@ const PlayerCardFolder: React.FC<{}> = () => {
                             top: '50%' 
                         },
                     ])}
+                    finishOnInterrupt
                     onClick={(e: any) => e.stopPropagation()}
                     style={{
                         position: "fixed",

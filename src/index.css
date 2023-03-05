@@ -8,30 +8,6 @@ html {
   font-family: arial,verdana,sans-serif
 }
 
-.flip-container {
-  perspective: 1000px
-}
-.flipper {
-  transition: .6s cubic-bezier(.25, .75, .5, 1.2);
-  transform-style: preserve-3d;
-  position: relative;
-  height: 100%;
-  width: 100%
-}
-.back,
-.front {
-  backface-visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 0
-}
-.front {
-  z-index: 2;
-  transform: rotateY(0)
-}
-.back {
-  transform: rotateY(180deg)
-}
 .text-button {
   background: 0 0;
   color: inherit;
