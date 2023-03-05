@@ -29,7 +29,7 @@ const Flipper: React.FC<PropsWithChildren<FlipperProps>> = ({
     const [frontFace, startFlippingTo, finishFlip, currentTransition] = useTransitioningState<React.ReactNode, FlipDirection>(children);
     const [backFace, setBackFace] = useState<React.ReactNode>(null);
 
-    const realFlipTo = (newFace: React.ReactNode, flipDirection: FlipDirection = 'flipRight') => {
+    const flipTo = (newFace: React.ReactNode, flipDirection: FlipDirection = 'flipRight') => {
         setBackFace(newFace);
         startFlippingTo(newFace, flipDirection);
     };
@@ -58,7 +58,7 @@ const Flipper: React.FC<PropsWithChildren<FlipperProps>> = ({
                     width: '100%',
                 }}
             >
-                <FlipContext.Provider value={{ flipTo: realFlipTo }}>
+                <FlipContext.Provider value={{ flipTo }}>
                     <div
                         style={{
                             transform: 'rotateY(0)',
