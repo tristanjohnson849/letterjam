@@ -40,7 +40,7 @@ const Flipper: React.FC<PropsWithChildren<FlipperProps>> = ({
     };
 
     return (
-        <div style={{ perspective: '1000px' }}>
+        <div style={{ ...containerStyle, perspective: '1000px' }}>
             <ControlledAnimated<FlipDirection> 
                 currentAnimation={currentTransition}
                 onAnimationEnd={onAnimationEnd}
@@ -61,19 +61,19 @@ const Flipper: React.FC<PropsWithChildren<FlipperProps>> = ({
                 <FlipContext.Provider value={{ flipTo }}>
                     <div
                         style={{
+                            ...faceStyle,
                             transform: 'rotateY(0)',
                             zIndex: 2,
                             ...faceContainer,
-                            ...faceStyle
                         }}
                     >
                         {frontFace}
                     </div>
                     <div
                         style={{
+                            ...faceStyle,
                             transform: 'rotateY(180deg)',
                             ...faceContainer,
-                            ...faceStyle
                         }}
                     >
                         {backFace}
