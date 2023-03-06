@@ -24,7 +24,8 @@ const PlayerCard = () => {
                     flexDirection: 'column',
                     flexBasis: 'start',
                     alignItems: 'center',
-                    border: '1px solid #000',
+                    border: '1px solid #666',
+                    borderRadius: '4px',
                     flex: 1,
                     marginRight: '24px'
                 }}
@@ -51,7 +52,8 @@ const PlayerCard = () => {
                 <div
                     style={{
                         padding: '18px',
-                        border: '1px solid #000',
+                        border: '1px solid #666',
+                        borderRadius: '4px',
                         marginBottom: '24px',
                         flex: 1,
                         display: 'flex',
@@ -62,6 +64,7 @@ const PlayerCard = () => {
                     <h2 style={{ margin: 0, marginBottom: '8px' }}>Notes</h2>
                     <textarea
                         style={{
+                            fontFamily: 'arial,verdana,sans-serif',
                             border: 'none',
                             resize: 'none',
                             flex: 1,
@@ -72,7 +75,8 @@ const PlayerCard = () => {
                 <div
                     style={{
                         padding: '18px',
-                        border: '1px solid #000',
+                        border: '1px solid #666',
+                        borderRadius: '4px',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
